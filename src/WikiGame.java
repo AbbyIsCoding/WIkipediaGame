@@ -1,24 +1,38 @@
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashSet;
+import javax.swing.*;
 
 public class WikiGame {
+// tryna make a layout
+    private JFrame mainFrame;
+    private int WIDTH=800;
+    private int HEIGHT=700;
+
 
     private int maxDepth;
     private ArrayList<String> path = new ArrayList<>();
     private HashSet badLinks = new HashSet();
+    // Sets frame dimensions
+
+
 
     public static void main(String[] args) {
         WikiGame w = new WikiGame();
     }
 
     public WikiGame() {
+        prepareGUI();
 
-        String startLink = "https://en.wikipedia.org/wiki/Ian_Somerhalder";  // beginning link, where the program will start
-        String endLink = "https://en.wikipedia.org/wiki/The_Vampire_Diaries";    // ending link, where the program is trying to get to
-        maxDepth = 2;           // start this at 1 or 2, and if you get it going fast, increase
+        String startLink = "https://en.wikipedia.org/wiki/List_of_The_Vampire_Diaries_characters#Elena_Gilbert";  // beginning link, where the program will start
+        String endLink = "https://en.wikipedia.org/wiki/Steven_R._McQueen";    // ending link, where the program is trying to get to
+        maxDepth = 3;           // start this at 1 or 2, and if you get it going fast, increase
 
         // put array list with things that we don't want
         badLinks.add("/wiki/Ian_Somerhalder");
@@ -38,7 +52,31 @@ public class WikiGame {
             System.out.println("did not find it********************************************************************");
         }
 
+        //print path (for loop)
+
+        for (int i = path.size() - 1; i >= 0; i--) {
+            System.out.println(path.get(i));
+        }
+
     }
+
+    private void prepareGUI() {
+
+        mainFrame = new JFrame("Java SWING Examples");
+        mainFrame.setSize(WIDTH, HEIGHT);
+        mainFrame.setLayout(new GridLayout(2,1));
+        mainFrame.getContentPane().setBackground(Color.black);
+
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        mainFrame.setVisible(true);
+    }
+
 
     // recursion method
     public boolean findLink(String startLink, String endLink, int depth) {
@@ -59,7 +97,7 @@ public class WikiGame {
 
             try {
                 System.out.println();
-                URL url = new URL("https://en.wikipedia.org/wiki/Ian_Somerhalder");
+                URL url = new URL(startLink);
 
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(url.openStream())
@@ -79,6 +117,7 @@ public class WikiGame {
 //                            System.out.println("the link is: " + link2);
                             if (findLink(link2, endLink,depth + 1)) {
 
+                                path.add(link2);
                                 return true;
                             }
                         }
